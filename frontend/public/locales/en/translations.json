@@ -340,5 +340,21 @@
   "admin": {
     "signup-title": "Admin Sign Up",
     "dashboard": "Admin Dashboard"
+  },
+  "user-secrets": {
+    "types": {
+      "WebLogin": "Web Login",
+      "CreditCard": "Credit Card",
+      "SecureNote": "Secure Note"
+    },
+    "fields": {
+      "username": "Username",
+      "password": "Password",
+      "card_number": "Credit Card Number",
+      "cvv": "CVV",
+      "expiry_date": "Expiration Date",
+      "title": "Title",
+      "note": "Note"
+    }
   }
 }
