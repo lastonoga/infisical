@@ -22,7 +22,6 @@ export const withPermission = <T extends {}, J extends TOrgPermission>(
 ) => {
   const HOC = (hocProps: T) => {
     const { permission } = useOrgPermission();
-
     // akhilmhdh: Set as any due to casl/react ts type bug
     // REASON: casl due to its type checking can't seem to union even if union intersection is applied
     if (permission.cannot(action as any, subject)) {

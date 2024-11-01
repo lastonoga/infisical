@@ -67,6 +67,7 @@ import { TProjectKeyServiceFactory } from "@app/services/project-key/project-key
 import { TProjectMembershipServiceFactory } from "@app/services/project-membership/project-membership-service";
 import { TProjectRoleServiceFactory } from "@app/services/project-role/project-role-service";
 import { TSecretServiceFactory } from "@app/services/secret/secret-service";
+import { TUserSecretsServiceFactory } from "@app/services/user-secrets/user-secrets-service";
 import { TSecretBlindIndexServiceFactory } from "@app/services/secret-blind-index/secret-blind-index-service";
 import { TSecretFolderServiceFactory } from "@app/services/secret-folder/secret-folder-service";
 import { TSecretImportServiceFactory } from "@app/services/secret-import/secret-import-service";
@@ -133,6 +134,7 @@ declare module "fastify" {
       projectKey: TProjectKeyServiceFactory;
       projectRole: TProjectRoleServiceFactory;
       secret: TSecretServiceFactory;
+      userSecrets: TUserSecretsServiceFactory;
       secretReplication: TSecretReplicationServiceFactory;
       secretTag: TSecretTagServiceFactory;
       secretImport: TSecretImportServiceFactory;
