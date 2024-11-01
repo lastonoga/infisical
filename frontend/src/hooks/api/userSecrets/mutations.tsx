@@ -2,6 +2,7 @@ import { MutationOptions, useMutation } from "@tanstack/react-query";
 
 import { apiRequest } from "@app/config/request";
 import { TCreateUserSecret, TDeleteUserSecret, TGetUserSecret, TUpdateUserSecret, TUserSecret } from "./types";
+import { createNotification } from "@app/components/notifications";
 
 export const useCreateUserSecret = ({
   options
@@ -14,7 +15,10 @@ export const useCreateUserSecret = ({
       return data;
     },
     onSuccess: (_, response) => {
-      console.log(response);
+      createNotification({
+        type: "success",
+        text: `User Secret "${response.key}" is created successfully`,
+      });
     },
     ...options
   });
@@ -31,7 +35,10 @@ export const useDeleteUserSecret = ({
       return data;
     },
     onSuccess: (_, response) => {
-      console.log(response);
+      createNotification({
+        type: "success",
+        text: `User Secret is deleted successfully`,
+      });
     },
     ...options
   });
@@ -48,7 +55,10 @@ export const useUpdateUserSecret = ({
       return data;
     },
     onSuccess: (_, response) => {
-      console.log(response);
+      createNotification({
+        type: "success",
+        text: `User Secret "${response.key}" has beedn updated successfully`,
+      });
     },
     ...options
   });

@@ -6,24 +6,27 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { UserSecretForm } from "./UserSecretForm";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { TUserSecret } from "@app/hooks/api/userSecrets/types";
+import { format } from "date-fns";
 
 
 type UserSecretsRowProps = {
-    id: string;
+    secret: TUserSecret;
     name: string;
     type: string;
     onDelete: (id: string) => void;
     onEdit: (id: string) => void;
 }
 
-export const UserSecretsRow = ({ id, name, type, onDelete, onEdit }: UserSecretsRowProps) => {
+export const UserSecretsRow = ({ secret, onDelete, onEdit }: UserSecretsRowProps) => {
+    const { id, key, type, updatedAt } = secret;
     const { t } = useTranslation();
 
     const { mutateAsync: deleteUserSecret } = useDeleteUserSecret();
     const { mutateAsync: getUserSecret } = useGetDetailedUserSecret();
 
     const [defaultValues, setDefaultValues] = useState({
-        key: name,
+        key,
         type,
     });
 
@@ -32,7 +35,7 @@ export const UserSecretsRow = ({ id, name, type, onDelete, onEdit }: UserSecrets
 
     const handleDeleteSecret = async () => {
         await deleteUserSecret({ id, });
-        
+
         if (onDelete) {
             await onDelete(id);
         }
@@ -42,9 +45,9 @@ export const UserSecretsRow = ({ id, name, type, onDelete, onEdit }: UserSecrets
 
     const openEditPopup = async () => {
         const response: any = await getUserSecret({ id });
-        
+
         setDefaultValues({
-            key: name,
+            key,
             type,
             ...response.value,
         });
@@ -55,16 +58,19 @@ export const UserSecretsRow = ({ id, name, type, onDelete, onEdit }: UserSecrets
     return (
 
         <Tr>
-            <Td className="items-center">
-                {name}
+            <Td className="items-center capitalize">
+                {key}
+            </Td>
+            <Td className="items-center capitalize">
+                {t(`user-secrets.types.${type}`)}
             </Td>
             <Td className="items-center">
                 <div className="group flex w-full cursor-text items-center space-x-2">
                     <div className="flex-grow border-r border-r-mineshaft-600 pr-2 pl-1">
-                    {t(`user-secrets.types.${type}`)}
+                        {format(new Date(updatedAt), "yyyy-MM-dd - HH:mm a")}
                     </div>
-                    <div className="flex w-24 justify-center space-x-3 pl-2 transition-all">
-                        <div className="opacity-0 group-hover:opacity-100">
+                    <div className="flex w-24 justify-center space-x-3 pl-2">
+                        <div>
                             <UserSecretForm
                                 action="update"
                                 onExecute={onEdit}
@@ -85,7 +91,7 @@ export const UserSecretsRow = ({ id, name, type, onDelete, onEdit }: UserSecrets
                                 </IconButton>
                             </Tooltip>
                         </div>
-                        <div className="opacity-0 group-hover:opacity-100">
+                        <div>
                             <DeleteActionModal
                                 isOpen={isDeleteModalOpen}
                                 onClose={toggleDeleteModal.off}

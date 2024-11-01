@@ -135,8 +135,8 @@ export const UserSecretForm = ({
     <Modal isOpen={isOpen} onOpenChange={onTogglePopUp}>
       <ModalContent
         className="max-h-[80vh] overflow-y-auto"
-        title="Bulk Create & Update"
-        subTitle="Create & update a secret across many environments"
+        title="Create & Update"
+        subTitle="Create & update your secret"
       >
 
         <form onSubmit={handleSubmit(handleFormSubmit)} noValidate>

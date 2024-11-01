@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     faFolderBlank,
     faPlus
@@ -39,17 +39,29 @@ export const UserSecretsOverviewPage = () => {
         perPage,
         page,
         setPerPage,
-    } = usePagination<DashboardSecretsOrderBy>(DashboardSecretsOrderBy.Name);
+    } = usePagination('None');
 
     const { isLoading: isOverviewLoading, data: overview, refetch } = useGetSecretsOverview({
         limit,
         offset
     });
 
+    console.log(isOverviewLoading)
+
+    useEffect(() => {
+        refetch();
+    }, [limit, offset]);
+
     const {
         userSecrets,
         totalCount = 0,
     } = overview ?? {};
+
+    useEffect(() => {
+        if (userSecrets?.length === 0 && offset > 0) {
+            setPage(page - 1);
+        }
+    }, [overview]);
 
     useResetPageHelper({
         totalCount,
@@ -105,6 +117,11 @@ export const UserSecretsOverviewPage = () => {
                                             Type
                                         </div>
                                     </Th>
+                                    <Th className="sticky top-0 z-20 border-0 bg-mineshaft-800 p-0">
+                                        <div className="flex items-center border-b border-r border-mineshaft-600 pr-5 pl-3 pt-3.5 pb-3">
+                                            Last Updated At
+                                        </div>
+                                    </Th>
                                 </Tr>
                             </THead>
                             <TBody>
@@ -121,9 +138,7 @@ export const UserSecretsOverviewPage = () => {
                                 {userSecrets?.map((secret) => (
                                     <UserSecretsRow
                                         key={secret.id}
-                                        id={secret.id}
-                                        name={secret.key}
-                                        type={secret.type}
+                                        secret={secret}
                                         onDelete={refreshTable}
                                         onEdit={refreshTable}
                                     />
@@ -131,7 +146,7 @@ export const UserSecretsOverviewPage = () => {
 
                                 {isTableEmpty && !isOverviewLoading && (
                                     <Tr>
-                                        <Td colSpan={2}>
+                                        <Td colSpan={3}>
                                             <EmptyState
                                                 title={"Let's add some secrets"}
                                                 icon={faFolderBlank}

@@ -354,7 +354,7 @@
       "cvv": "CVV",
       "expiry_date": "Expiration Date",
       "title": "Title",
-      "note": "Note"
+      "content": "Note"
     }
   }
 }
