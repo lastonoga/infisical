@@ -1,7 +1,7 @@
 import { DeleteActionModal, IconButton, Td, Tooltip, Tr } from "@app/components/v2";
 import { useToggle } from "@app/hooks";
 import { useDeleteUserSecret, useGetDetailedUserSecret } from "@app/hooks/api/userSecrets/mutations";
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { UserSecretForm } from "./UserSecretForm";
 import { useState } from "react";
@@ -12,8 +12,6 @@ import { format } from "date-fns";
 
 type UserSecretsRowProps = {
     secret: TUserSecret;
-    name: string;
-    type: string;
     onDelete: (id: string) => void;
     onEdit: (id: string) => void;
 }
@@ -32,6 +30,7 @@ export const UserSecretsRow = ({ secret, onDelete, onEdit }: UserSecretsRowProps
 
     const [isDeleteModalOpen, toggleDeleteModal] = useToggle();
     const [isEditModalOpen, toggleEditModal] = useToggle();
+    const [isViewModalOpen, toggleViewModal] = useToggle();
 
     const handleDeleteSecret = async () => {
         await deleteUserSecret({ id, });
@@ -55,10 +54,22 @@ export const UserSecretsRow = ({ secret, onDelete, onEdit }: UserSecretsRowProps
         toggleEditModal.on();
     }
 
+    const openViewPopup = async () => {
+        const response: any = await getUserSecret({ id });
+
+        setDefaultValues({
+            key,
+            type,
+            ...response.value,
+        });
+
+        toggleViewModal.on();
+    }
+
     return (
 
         <Tr>
-            <Td className="items-center capitalize">
+            <Td className="items-center capitalize cursor-pointer" onClick={openViewPopup}>
                 {key}
             </Td>
             <Td className="items-center capitalize">
@@ -70,6 +81,27 @@ export const UserSecretsRow = ({ secret, onDelete, onEdit }: UserSecretsRowProps
                         {format(new Date(updatedAt), "yyyy-MM-dd - HH:mm a")}
                     </div>
                     <div className="flex w-24 justify-center space-x-3 pl-2">
+                    <div>
+                            <UserSecretForm
+                                action="view"
+                                onExecute={onEdit}
+                                defaultValues={defaultValues}
+                                id={id}
+                                isOpen={isViewModalOpen}
+                                onTogglePopUp={toggleViewModal.toggle}
+                                onClose={toggleViewModal.off}
+                            />
+                            <Tooltip content="View">
+                                <IconButton
+                                    variant="plain"
+                                    ariaLabel="view-value"
+                                    className="h-full"
+                                    onClick={openViewPopup}
+                                >
+                                    <FontAwesomeIcon icon={faEye} />
+                                </IconButton>
+                            </Tooltip>
+                        </div>
                         <div>
                             <UserSecretForm
                                 action="update"

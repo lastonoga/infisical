@@ -46,8 +46,6 @@ export const UserSecretsOverviewPage = () => {
         offset
     });
 
-    console.log(isOverviewLoading)
-
     useEffect(() => {
         refetch();
     }, [limit, offset]);
@@ -168,7 +166,7 @@ export const UserSecretsOverviewPage = () => {
                             </TBody>
                         </Table>
                     </TableContainer>
-                    {!isOverviewLoading && totalCount > 0 && (
+                    {!isOverviewLoading && totalCount >= perPage && (
                         <Pagination
                             className="rounded-b-md border-t border-solid border-t-mineshaft-600"
                             count={totalCount}

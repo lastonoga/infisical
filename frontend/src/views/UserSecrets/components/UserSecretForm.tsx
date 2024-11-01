@@ -45,9 +45,10 @@ const UserSecretsForm = z
 
 const CREATE_ACTION = 'create';
 const UPDATE_ACTION = 'update';
+const VIEW_ACTION = 'view';
 
 type Props = {
-  action: typeof CREATE_ACTION | typeof UPDATE_ACTION;
+  action: typeof CREATE_ACTION | typeof UPDATE_ACTION | typeof VIEW_ACTION;
   defaultValues?: {
     [key: string]: any;
   };
@@ -188,31 +189,44 @@ export const UserSecretForm = ({
             <Input
               {...register("key")}
               placeholder="Type your secret name"
+              isDisabled={action === VIEW_ACTION}
               autoCapitalization={currentWorkspace?.autoCapitalization}
             />
           </FormControl>
-          <CredentialFormComponent control={control} errors={errors} />
+          <CredentialFormComponent isView={action === VIEW_ACTION} control={control} errors={errors} />
           <div className="mt-7 flex items-center">
-            <Button
-              isDisabled={isSubmitting}
-              isLoading={isSubmitting}
-              key="layout-create-project-submit"
-              className="mr-4"
-              type="submit"
-            >
-              {action === CREATE_ACTION ? 'Create' : 'Update'} Secret
-            </Button>
-            <Button
-              key="layout-cancel-create-project"
-              onClick={onClose}
-              variant="plain"
-              colorSchema="secondary"
-            >
-              Cancel
-            </Button>
+            {action === VIEW_ACTION ? (
+              <Button
+                onClick={onClose}
+                className="mr-4"
+                type="submit"
+              >
+                Close
+              </Button>
+            ) : (
+              <>
+                <Button
+                  isDisabled={isSubmitting}
+                  isLoading={isSubmitting}
+                  key="layout-create-project-submit"
+                  className="mr-4"
+                  type="submit"
+                >
+                  {action === CREATE_ACTION ? 'Create' : 'Update'} Secret
+                </Button>
+                <Button
+                  key="layout-cancel-create-project"
+                  onClick={onClose}
+                  variant="plain"
+                  colorSchema="secondary"
+                >
+                  Cancel
+                </Button>
+              </>
+            )}
           </div>
         </form>
-      </ModalContent>
-    </Modal>
+      </ModalContent >
+    </Modal >
   );
 };

@@ -1,12 +1,13 @@
-import { FormControl } from "@app/components/v2";
+import { FormControl, Input } from "@app/components/v2";
 import { InfisicalSecretInput } from "@app/components/v2/InfisicalSecretInput";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
-export const WebLogin = ({ control, errors }: any) => {
+export const WebLogin = ({ control, errors, isView = false }: any) => {
     const { t } = useTranslation();
     const fields = ['username', 'password'];
+
     return (
         <div>
             {fields.map((fieldName) => (
@@ -20,11 +21,19 @@ export const WebLogin = ({ control, errors }: any) => {
                             isError={Boolean(errors[fieldName])}
                             errorText={errors[fieldName]?.message}
                         >
-                            <InfisicalSecretInput
-                                {...field}
-                                required={true}
-                                containerClassName="text-bunker-300 hover:border-primary-400/50 border border-mineshaft-600 bg-mineshaft-900 px-2 py-1.5"
-                            />
+                            {isView ? (
+                                <Input
+                                    {...field}
+                                    isDisabled={isView}
+                                />
+                            ) : (
+                                <InfisicalSecretInput
+                                    {...field}
+                                    required={true}
+                                    disabled={isView}
+                                    containerClassName="text-bunker-300 hover:border-primary-400/50 border border-mineshaft-600 bg-mineshaft-900 px-2 py-1.5"
+                                />
+                            )}
                         </FormControl>
                     )}
                 />
