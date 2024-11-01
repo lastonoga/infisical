@@ -62,11 +62,10 @@ export const userSecretsDALFactory = (db: TDbClient) => {
     }
   };
 
-  const listSecret = async ({
+  const listSecret = async (filter: Partial<TUserSecrets>, {
     limit,
     offset = 0,
-    ...filter
-  }: Partial<TUserSecrets> & { limit: number, offset: number },
+  }: { limit: number, offset: number },
     tx?: Knex
   ) => {
     try {

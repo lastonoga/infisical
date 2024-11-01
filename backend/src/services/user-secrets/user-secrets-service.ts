@@ -1,5 +1,3 @@
-import { logger } from "@app/lib/logger";
-import { TUserDALFactory } from "../user/user-dal";
 import { TUserSecretsDALFactory } from "./user-secrets-dal";
 import {
   TCreateUserSecretDTO,
@@ -8,8 +6,6 @@ import {
   TListUserSecretDTO,
   TUpdateUserSecretDTO,
 } from "./user-secrets-types";
-import { infisicalSymmetricDecrypt, infisicalSymmetricEncypt } from "@app/lib/crypto/encryption";
-import { SecretKeyEncoding } from "@app/db/schemas";
 import { TKmsServiceFactory } from "../kms/kms-service";
 import { KmsDataKey } from "../kms/kms-types";
 
@@ -100,6 +96,7 @@ export const userSecretsServiceFactory = ({
     const secret = await userSecretsDAL.listSecret({
       userId: data.actorId,
       orgId: data.actorOrgId,
+    }, {
       limit: data.limit,
       offset: data.offset,
     });
