@@ -783,6 +783,7 @@ export const registerRoutes = async (
 
   const userSecretsService = userSecretsServiceFactory({
     userSecretsDAL,
+    kmsService,
   });
 
   const snapshotService = secretSnapshotServiceFactory({

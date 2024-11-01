@@ -16,15 +16,9 @@ export const userSecretsDALFactory = (db: TDbClient) => {
     tx?: Knex
   ) => {
     try {
-      const updateData = {
-        key: data.key,
-        type: data.type,
-        encryptedValue: data.value,
-      }
-
       const sec = await (tx || db)(TableName.UserSecret)
         .where(filter)
-        .update(updateData)
+        .update(data)
         .returning("*");
 
       return sec[0];
@@ -38,15 +32,14 @@ export const userSecretsDALFactory = (db: TDbClient) => {
     tx?: Knex
   ) => {
     try {
-      const resData = {
-        key: data.key,
-        type: data.type,
-        encryptedValue: data.value,
-        userId: data.userId,
-        orgId: data.orgId,
-      }
       const res = await (tx || db)(TableName.UserSecret)
-        .insert(resData as never)
+        .insert({
+          key: data.key,
+          type: data.type,
+          encryptedValue: data.encryptedValue,
+          userId: data.userId,
+          orgId: data.orgId,
+        })
         .returning("*");
       return res[0];
     } catch (error) {
@@ -106,10 +99,7 @@ export const userSecretsDALFactory = (db: TDbClient) => {
 
       const row = res[0];
 
-      const buffer: Buffer = Buffer.from(row.encryptedValue);
-      const value: string = buffer.toString();
-
-      row.value = JSON.parse(value);
+      // row.value = JSON.parse(value);
 
       return row;
     } catch (error) {

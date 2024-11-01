@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { UserSecretsSchema } from "@app/db/schemas";
 import { FOLDERS } from "@app/lib/api-docs";
-import { secretsLimit } from "@app/server/config/rateLimiter";
+import { readLimit, writeLimit } from "@app/server/config/rateLimiter";
 import { verifyAuth } from "@app/server/plugins/auth/verify-auth";
 import { AuthMode } from "@app/services/auth/auth-type";
 
@@ -11,7 +11,7 @@ export const registerUserSecretsRouter = async (server: FastifyZodProvider) => {
     url: "/",
     method: "POST",
     config: {
-      rateLimit: secretsLimit
+      rateLimit: writeLimit
     },
     schema: {
       description: "Create User Secret",
@@ -27,7 +27,8 @@ export const registerUserSecretsRouter = async (server: FastifyZodProvider) => {
       }),
       response: {
         200: z.object({
-          userSecret: UserSecretsSchema
+          userSecrets: z.array(UserSecretsSchema).optional(),
+          totalCount: z.number().optional(),
         })
       }
     },
@@ -48,7 +49,25 @@ export const registerUserSecretsRouter = async (server: FastifyZodProvider) => {
     url: "/",
     method: "GET",
     config: {
-      rateLimit: secretsLimit
+      rateLimit: readLimit
+    },
+    schema: {
+      description: "Create User Secret",
+      security: [
+        {
+          bearerAuth: []
+        }
+      ],
+      querystring: z.object({
+        limit: z.string().trim(),
+        offset: z.string().trim(),
+      }),
+      response: {
+        200: z.object({
+          userSecrets: z.array(UserSecretsSchema),
+          totalCount: z.number(),
+        })
+      }
     },
     onRequest: verifyAuth([AuthMode.JWT]),
     handler: async (req) => {
@@ -57,7 +76,7 @@ export const registerUserSecretsRouter = async (server: FastifyZodProvider) => {
         actor: req.permission.type,
         actorAuthMethod: req.permission.authMethod,
         actorOrgId: req.permission.orgId,
-        ...req.body,
+        ...req.query,
       });
       return data;
     }
@@ -67,7 +86,7 @@ export const registerUserSecretsRouter = async (server: FastifyZodProvider) => {
     url: "/:id",
     method: "PATCH",
     config: {
-      rateLimit: secretsLimit
+      rateLimit: writeLimit
     },
     onRequest: verifyAuth([AuthMode.JWT]),
     handler: async (req) => {
@@ -87,7 +106,7 @@ export const registerUserSecretsRouter = async (server: FastifyZodProvider) => {
     url: "/:id",
     method: "DELETE",
     config: {
-      rateLimit: secretsLimit
+      rateLimit: writeLimit
     },
     onRequest: verifyAuth([AuthMode.JWT]),
     handler: async (req) => {
@@ -106,7 +125,7 @@ export const registerUserSecretsRouter = async (server: FastifyZodProvider) => {
     url: "/:id",
     method: "GET",
     config: {
-      rateLimit: secretsLimit
+      rateLimit: readLimit
     },
     onRequest: verifyAuth([AuthMode.JWT]),
     handler: async (req) => {
